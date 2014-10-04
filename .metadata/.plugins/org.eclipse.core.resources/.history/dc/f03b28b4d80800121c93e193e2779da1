@@ -1,0 +1,81 @@
+package cu.cs.cpsc215.project1;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
+import org.jsoup.Jsoup;
+import org.jsoup.Jsoup.*;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+
+ 
+public class WebCrawler {
+
+
+	public static void main(String[] args) {
+		
+		try{
+			URL pageURL = new URL(args[0]);
+			Document doc = Jsoup.connect(args[0]).get();
+			Elements links = doc.select("a[href]"); // a with href
+			Elements pngs = doc.select("img[src$=.png]");
+			  // img with src ending .png
+
+			Element masthead = doc.select("div.masthead").first();
+			  // div with class=masthead
+
+			Elements resultLinks = doc.select("h3.r > a"); // direct a after h3
+			
+			//System.out.println(links);
+			System.out.println(pngs);
+			//System.out.println(resultLinks);
+			
+			
+		}catch(MalformedURLException URLX){
+        	System.out.println("ERROR: Bad URL.");
+        }catch(IOException ISX){
+        	System.out.println("ERROR: Bad Connection Stream/FileWriter.");
+        }
+	}	
+	
+	public static File downloadPage(String url)
+    {
+        try
+        {
+            URL pageURL = new URL(url);
+            URLConnection connect = pageURL.openConnection();
+            InputStream inStream = connect.getInputStream();
+            InputStreamReader inReader = new InputStreamReader(inStream);
+            BufferedReader inBuffer = new BufferedReader(inReader);
+            File makeFile = new File("URL6.txt");
+            FileWriter fWriter = new FileWriter(makeFile);
+            
+            String aLine = "";
+            try {
+                while ( (aLine=inBuffer.readLine()) != null){
+                	fWriter.write(aLine);
+                }
+                fWriter.flush();
+                fWriter.close();
+            	return(makeFile);
+            }catch(IOException WX){
+            	System.out.println("ERROR: Bad Read()/Write().");
+            }
+        }catch(MalformedURLException URLX){
+        	System.out.println("ERROR: Bad URL.");
+        }catch(IOException ISX){
+        	System.out.println("ERROR: Bad Connection Stream/FileWriter.");
+        }
+		return null;
+    }
+
+}

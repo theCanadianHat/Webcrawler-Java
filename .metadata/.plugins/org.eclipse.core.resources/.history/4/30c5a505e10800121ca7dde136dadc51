@@ -1,0 +1,9 @@
+package cu.cs.cpsc215.project1;
+
+import java.io.InputStream;
+
+public interface WebElement {
+
+	InputStream getInstream();
+	
+}

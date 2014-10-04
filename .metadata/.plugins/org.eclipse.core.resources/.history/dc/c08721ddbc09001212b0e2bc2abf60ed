@@ -1,0 +1,9 @@
+package cu.cs.cpsc215.project1;
+
+public class WebFile {
+
+	public WebFile(String name){
+		
+	}
+
+}

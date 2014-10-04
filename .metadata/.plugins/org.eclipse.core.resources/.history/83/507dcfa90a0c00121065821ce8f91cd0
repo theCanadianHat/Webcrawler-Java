@@ -1,0 +1,21 @@
+package cu.cs.cpsc215.project1;
+
+public class DownloadRepository {
+	
+	public static DownloadRepository m_singleton;
+	
+	private DownloadRepository(){}
+	
+	public static DownloadRepository getInstance(){
+		if(m_singleton == null){
+			m_singleton = new DownloadRepository();
+			
+		}
+		return(m_singleton);
+	}
+
+	public void saveElement(String fileName, WebElement object){
+
+	}
+	
+}

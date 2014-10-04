@@ -1,0 +1,16 @@
+package cu.cs.cpsc215.project1;
+
+import java.io.InputStream;
+import java.util.Vector;
+
+public interface WebElement {
+
+	public InputStream getInstream();
+	public void crawl(int depth);
+	public Vector getWebImages();
+	
+	public Vector getWebPages();
+	
+	public Vector getWebFiles();
+	
+}

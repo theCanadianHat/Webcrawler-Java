@@ -1,0 +1,51 @@
+package cu.cs.cpsc215.project1;
+
+import java.io.InputStream;
+import java.util.Vector;
+
+import org.jsoup.select.Elements;
+
+public class WebPage
+implements WebElement{
+
+	private String m_url;
+	private Vector m_pages;
+	private Vector m_images;
+	private Vector m_files;
+	
+	public WebPage(String url){
+		m_url=url;
+		m_pages = m_images = m_files = new Vector();
+	}
+
+	public void crawl(int depth){
+		if(depth < 0){
+			return;
+		}
+		else{
+			
+		}
+	}
+	
+	public void crawl(int depth, Elements links){
+		
+	}
+	
+	public Vector getWebImages(){
+		return(m_images);
+	}
+	
+	public Vector getWebPages(){
+		return(m_pages);
+	}
+	
+	public Vector getWebFiles(){
+		return(m_files);
+	}
+
+	@Override
+	public InputStream getInstream() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

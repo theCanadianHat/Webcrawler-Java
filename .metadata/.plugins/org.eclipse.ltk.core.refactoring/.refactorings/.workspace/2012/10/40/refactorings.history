@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;DOMParser&apos;" deleteContents="false" description="Delete resource &apos;DOMParser&apos;" element1="/DOMParser" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1349445628504"/>
+</session>

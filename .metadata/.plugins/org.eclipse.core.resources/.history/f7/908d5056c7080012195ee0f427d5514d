@@ -1,0 +1,94 @@
+package cu.cs.cpsc215.project1;
+
+import java.net.*;
+import java.io.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+
+
+public class WebCrawler {
+
+
+	public static void main(String[] args) {
+		
+		
+		try{
+		File fXmlFile = downloadPage(args[0]);
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(fXmlFile);
+		doc.getDocumentElement().normalize();
+ 
+		System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+		NodeList nList = doc.getElementsByTagName("staff");
+		System.out.println("-----------------------");
+ 
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+ 
+		   Node nNode = nList.item(temp);
+		   if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+ 
+		      Element eElement = (Element) nNode;
+ 
+		      System.out.println("First Name : " + getTagValue("<a href=", eElement));
+		      System.out.println("Last Name : " + getTagValue("lastname", eElement));
+	          System.out.println("Nick Name : " + getTagValue("nickname", eElement));
+		      System.out.println("Salary : " + getTagValue("salary", eElement));
+ 
+		   }
+		}
+	  } catch (Exception e) {
+		e.printStackTrace();
+	  }
+	
+}
+
+private static String getTagValue(String sTag, Element eElement) {
+	NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
+	 
+    Node nValue = (Node) nlList.item(0);
+
+return nValue.getNodeValue();
+}
+		
+	
+	
+	public static File downloadPage(String url)
+    {
+        try
+        {
+            URL pageURL = new URL(url);
+            URLConnection connect = pageURL.openConnection();
+            InputStream inStream = connect.getInputStream();
+            InputStreamReader inReader = new InputStreamReader(inStream);
+            BufferedReader inBuffer = new BufferedReader(inReader);
+            File makeFile = new File("URL6.txt");
+            FileWriter fWriter = new FileWriter(makeFile);
+            
+            String aLine = "";
+            try {
+                while ( (aLine=inBuffer.readLine()) != null){
+                	fWriter.write(aLine);
+                }
+                fWriter.flush();
+                fWriter.close();
+            	return(makeFile);
+            }catch(IOException WX){
+            	System.out.println("ERROR: Bad Read()/Write().");
+            }
+        }catch(MalformedURLException URLX){
+        	System.out.println("ERROR: Bad URL.");
+        }catch(IOException ISX){
+        	System.out.println("ERROR: Bad Connection Stream/FileWriter.");
+        }
+		return null;
+    }
+
+}

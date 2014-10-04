@@ -1,0 +1,171 @@
+package cu.cs.cpsc215.project1;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.util.Vector;
+
+import org.jsoup.HttpStatusException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+public class WebPage
+implements WebElement{
+
+	static Vector m_urls = new Vector();
+	
+	private String m_url;
+	private Vector m_pages;
+	private Vector m_images;
+	private Vector m_files;
+	
+	public WebPage(String url){
+		m_url=url;
+		m_pages = new Vector();
+		m_images = new Vector();
+		m_files = new Vector();
+	}
+
+	public void crawl(int depth, String url){
+		if(depth < 0){
+			return;
+		}
+		else{
+			if(!m_urls.contains(url)){
+				try{
+					System.out.println(url+"      Depth = "+depth);
+					Document doc = Jsoup.connect(url).get();
+					//fills Elements objects with HTML elements based on the tag
+					Elements pages = doc.select("[href$=.htm],[href$=.html],[href$=.jsp],[href$=.asp],[href$=.php],[href$=.aspx]");
+					Elements images = doc.select("[src$=.jpg],[src$=.png],[src$=.bmp],[src$=.tiff],[href$=.bmp],[href$=.tiff],[href$=.png],[href$=.jpg]");
+					Elements files = doc.select("[href$=.doc],[href$=.docx],[href$=.txt],[href$=.pdf],[href$=.odt],[href$=.xls],[href$=.ppt],[href$=.csv]");
+				
+					for(int i=0;i<pages.size();i++){
+						boolean conCat = false;
+						String temp = "";
+						if(pages.get(i).attr("href")!="" && pages.get(i).attr("href").substring(0,3) != "http"){
+							if(pages.get(i).attr("href")!="" && pages.get(i).attr("href").charAt(0) == '.'){
+								temp=url+pages.get(i).attr("href").substring(2);
+								conCat = true;
+							}else if(pages.get(i).attr("href")!="" && pages.get(i).attr("href").charAt(0) == '/'){
+								temp = url+pages.get(i).attr("href");
+								conCat = true;
+							}else if(pages.get(i).attr("href").charAt(3) != 'p'){
+								temp = url+"/"+pages.get(i).attr("href");
+								conCat = true;
+							}
+						}
+						if(conCat){
+							m_pages.add(temp);
+						}
+						else if( !m_pages.contains(pages.get(i).attr("href")) ){
+							m_pages.add(new WebPage(pages.get(i).attr("href")));
+						}
+					}
+				
+					for(int i=0;i<images.size();i++){
+						boolean conCat = false;
+						String temp = "";
+						
+						if(images.get(i).attr("href")!="" && images.get(i).attr("href").substring(0, 3) != "http"){
+							if(images.get(i).attr("href")!="" && images.get(i).attr("href").charAt(0) == '.'){
+								temp=url+images.get(i).attr("href").substring(2);
+								conCat = true;
+							}else if(images.get(i).attr("src")!="" && images.get(i).attr("src").charAt(0) == '.'){
+								temp = url+images.get(i).attr("src");
+								conCat = true;
+							}else if(images.get(i).attr("href")!="" && images.get(i).attr("href").charAt(0) == '/'){
+									temp = url+images.get(i).attr("href");
+									conCat = true;
+							}else if(images.get(i).attr("src")!="" && images.get(i).attr("src").charAt(0) == '/'){
+									temp = url+images.get(i).attr("src");
+									conCat = true;
+							}else{
+								if(images.get(i).attr("href") == ""){
+									temp = url+"/"+images.get(i).attr("src");
+									conCat = true;
+								}else{
+									temp = url+"/"+images.get(i).attr("href");
+									conCat = true;
+								}
+							}
+						}
+						
+						if(conCat){
+							m_images.add(temp);
+						}
+						else if( !m_images.contains(images.get(i).attr("src")) ){
+							m_images.add(new WebImage(images.get(i).attr("src")));
+						}
+						else if( !m_images.contains(images.get(i).attr("href")) ){
+							m_images.add(new WebImage(images.get(i).attr("href")));
+						}
+					}
+				
+					for(int i=0;i<files.size();i++){
+						boolean conCat = false;
+						String temp = "";
+						
+						if(files.get(i).attr("href")!="" && files.get(i).attr("href").substring(0, 3) != "http"){
+							if(files.get(i).attr("href")!="" && files.get(i).attr("href").charAt(0) == '.'){
+								temp=url+files.get(i).attr("href").substring(2);
+								conCat = true;
+							}
+							else if(files.get(i).attr("href")!="" && files.get(i).attr("href").charAt(0) == '/'){
+								temp = url+files.get(i).attr("href");
+								conCat = true;
+							}else{
+								temp = url+"/"+files.get(i).attr("href");
+								conCat = true;
+							}
+						}
+						if(conCat){
+							m_files.add(temp);
+						}
+						else if( !m_files.contains(files.get(i).attr("href")) ){
+							m_files.add(new WebFile(files.get(i).attr("href")));
+						}
+					}
+					m_urls.add(url);
+					
+					System.out.println(m_pages.size());
+					
+					for(int i=0; i<m_pages.size();i++){
+						crawl(depth-1,m_pages.get(i).toString());
+					}
+					//System.out.println(m_urls);
+					//System.out.println(m_pages);
+					//System.out.println(m_images);
+					//System.out.println(m_files);
+					
+				}catch(HttpStatusException HTTPX){
+					System.out.println("Skipping "+url);
+				}catch(IOException IOX){
+					IOX.printStackTrace();
+					System.out.println("ERROR: Bad Connection");
+					System.exit(-2);
+				}
+			
+			}
+		}
+	}
+	
+	public String toString(){
+		return(m_url);
+	}
+	
+	public Vector getWebImages(){
+		return(m_images);
+	}
+	
+	public Vector getWebPages(){
+		return(m_pages);
+	}
+	
+	public Vector getWebFiles(){
+		return(m_files);
+	}
+
+}

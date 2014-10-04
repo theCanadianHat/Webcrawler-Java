@@ -1,0 +1,80 @@
+package cu.cs.cpsc215.project1;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Vector;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+public class WebPage
+implements WebElement{
+
+	private String m_url;
+	private Vector m_pages;
+	private Vector m_images;
+	private Vector m_files;
+	
+	public WebPage(String url){
+		m_url=url;
+		m_pages = m_images = m_files = new Vector();
+	}
+
+	public void crawl(int depth, String url){
+		if(depth < 0){
+			return;
+		}
+		else{
+			try{
+				Document doc = Jsoup.connect(url).get();
+				//fills Elements objects with HTML elements based on the tag
+				Elements pages0 = doc.select("l[src$=.htm]");
+				Elements pages1 = doc.select("a[src$=.html]");
+				Elements pages2 = doc.select("a[src$=.jsp]");
+				Elements pages3 = doc.select("a[src$=.asp]");
+				Elements pages4 = doc.select("a[src$=.aspx]");
+				Elements pages5 = doc.select("a[src$=.php]");
+				
+				System.out.println(pages0);
+				System.out.println(pages1);
+				System.out.println(pages2);
+				System.out.println(pages3);
+				System.out.println(pages4);
+				System.out.println(pages5);
+			}catch(IOException IOX){
+				System.out.println("ERROR: Bad Connection");
+				System.exit(-2);
+			}
+	  }
+	}
+	
+	public void crawl(int depth, Elements links){
+		
+	}
+	
+	public Vector getWebImages(){
+		return(m_images);
+	}
+	
+	public Vector getWebPages(){
+		return(m_pages);
+	}
+	
+	public Vector getWebFiles(){
+		return(m_files);
+	}
+
+	@Override
+	public InputStream getInstream() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void crawl(int depth) {
+		// TODO Auto-generated method stub
+		
+	}
+}

@@ -1,0 +1,22 @@
+package cu.cs.cpsc215.project1;
+
+import java.util.Vector;
+
+public class DownloadRepository {
+	
+	private static DownloadRepository m_singleton;
+	
+	private DownloadRepository(){}
+	
+	public static DownloadRepository getInstance(){
+		if(m_singleton == null){
+			m_singleton = new DownloadRepository();		
+		}
+		return(m_singleton);
+	}
+
+	public void saveElement( saveMe){
+
+	}
+	
+}

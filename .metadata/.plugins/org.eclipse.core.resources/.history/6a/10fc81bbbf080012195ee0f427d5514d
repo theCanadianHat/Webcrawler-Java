@@ -1,0 +1,49 @@
+package cu.cs.cpsc215.project1;
+
+import java.net.*;
+import java.io.*;
+
+
+
+public class WebCrawler {
+
+
+	public static void main(String[] args) {
+		
+		File HTML = downloadPage("http://www.google.com/");
+		System.out.print(HTML);
+		
+	}
+	
+	public static File downloadPage(String url)
+    {
+        try
+        {
+            URL pageURL = new URL(url);
+            URLConnection connect = pageURL.openConnection();
+            InputStream inStream = connect.getInputStream();
+            InputStreamReader inReader = new InputStreamReader(inStream);
+            BufferedReader inBuffer = new BufferedReader(inReader);
+            File makeFile = new File("URL.txt");
+            FileWriter fWriter = new FileWriter(makeFile);
+            
+            String aLine = "";
+            try {
+                while ( (aLine=inBuffer.readLine()) != null){
+                	fWriter.write(aLine);
+                }
+                fWriter.flush();
+                fWriter.close();
+            	return(makeFile);
+            }catch(IOException WX){
+            	System.out.println("ERROR: Bad Read()/Write().");
+            }
+        }catch(MalformedURLException URLX){
+        	System.out.println("ERROR: Bad URL.");
+        }catch(IOException ISX){
+        	System.out.println("ERROR: Bad Connection Stream/FileWriter.");
+        }
+		return null;
+    }
+
+}
